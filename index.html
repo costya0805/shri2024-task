@@ -87,9 +87,8 @@
 
                 React.useEffect(() => {
                     const width = ref.current.offsetWidth;
-                    const height = ref.current.offsetHeight;
                     if (onSize) {
-                        onSize({ width, height });
+                        onSize(width);
                     }
                 });
 
@@ -237,7 +236,7 @@
                     ],
                 },
             };
-            for (let i = 0; i < 6; ++i) {
+            for (let i = 0; i < 2; ++i) {
                 TABS.all.items = [...TABS.all.items, ...TABS.all.items];
             }
             const TABS_KEYS = Object.keys(TABS);
@@ -259,15 +258,15 @@
                     setActiveTab(event.target.value);
                 };
 
-                let sizes = [];
+                let sizes = 0;
                 const onSize = (size) => {
-                    sizes.push(size);
+                    sizes += size;
                 };
 
                 React.useEffect(() => {
-                    const sumWidth = sizes.reduce((acc, item) => acc + item.width, 0);
+                    // const sumWidth = sizes.reduce((acc, item) => acc + item, 0);
 
-                    const newHasRightScroll = sumWidth > ref.current.offsetWidth;
+                    const newHasRightScroll = sizes > ref.current.offsetWidth;
                     if (newHasRightScroll !== hasRightScroll) {
                         setHasRightScroll(newHasRightScroll);
                     }
