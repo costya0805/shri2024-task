@@ -86,11 +86,11 @@
                 const { onSize } = props;
 
                 React.useEffect(() => {
-                    const width = ref.current.offsetWidth;
+                    console.log(1);
                     if (onSize) {
-                        onSize(width);
+                        onSize(ref.current.offsetWidth);
                     }
-                });
+                }, [onSize]);
 
                 return (
                     <li ref={ref} className={"event" + (props.slim ? " event_slim" : "")}>
@@ -236,18 +236,20 @@
                     ],
                 },
             };
+            const TABS_KEYS = Object.keys(TABS);
             for (let i = 0; i < 6; ++i) {
                 TABS.all.items = [...TABS.all.items, ...TABS.all.items];
             }
-            const TABS_KEYS = Object.keys(TABS);
 
             function Main() {
                 const ref = React.useRef();
                 const initedRef = React.useRef(false);
                 const [activeTab, setActiveTab] = React.useState("");
                 const [hasRightScroll, setHasRightScroll] = React.useState(false);
+                const [len, setLen] = React.useState(0);
 
                 React.useEffect(() => {
+                    console.log(2);
                     if (!activeTab && !initedRef.current) {
                         initedRef.current = true;
                         setActiveTab(new URLSearchParams(location.search).get("tab") || "all");
@@ -264,9 +266,9 @@
                 };
 
                 React.useEffect(() => {
-                    // const sumWidth = sizes.reduce((acc, item) => acc + item, 0);
-
                     const newHasRightScroll = sizes > ref.current.offsetWidth;
+                    console.log("hob", sizes, ref.current.offsetWidth);
+                    console.log("len", len);
                     if (newHasRightScroll !== hasRightScroll) {
                         setHasRightScroll(newHasRightScroll);
                     }
@@ -403,24 +405,29 @@
                             </div>
 
                             <div className="section__panel-wrapper" ref={ref}>
-                                {TABS_KEYS.map((key) => (
-                                    <div
-                                        key={key}
-                                        role="tabpanel"
-                                        className={
-                                            "section__panel" + (key === activeTab ? "" : " section__panel_hidden")
-                                        }
-                                        aria-hidden={key === activeTab ? "false" : "true"}
-                                        id={`panel_${key}`}
-                                        aria-labelledby={`tab_${key}`}
-                                    >
-                                        <ul className="section__panel-list">
-                                            {TABS[key].items.map((item, index) => (
-                                                <Event key={index} {...item} onSize={onSize} />
-                                            ))}
-                                        </ul>
-                                    </div>
-                                ))}
+                                {TABS_KEYS.map((key) => {
+                                    return (
+                                        key === activeTab && (
+                                            <div
+                                                key={key}
+                                                role="tabpanel"
+                                                className={
+                                                    "section__panel" +
+                                                    (key === activeTab ? "" : " section__panel_hidden")
+                                                }
+                                                aria-hidden={key === activeTab ? "false" : "true"}
+                                                id={`panel_${key}`}
+                                                aria-labelledby={`tab_${key}`}
+                                            >
+                                                <ul className="section__panel-list">
+                                                    {TABS[key].items.map((item, index) => (
+                                                        <Event key={index} {...item} onSize={onSize} />
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        )
+                                    );
+                                })}
                                 {hasRightScroll && <div className="section__arrow" onClick={onArrowCLick}></div>}
                             </div>
                         </section>
