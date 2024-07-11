@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Яндекс.Дом</title>
         <link rel="preload" as="font" href="assets/lato.woff2" type="font/woff2" crossorigin="anonymous" />
-        <script src="vendors/react-with-dom.js"></script>
+
         <link rel="stylesheet" type="text/css" href="reset.css" />
         <link rel="stylesheet" type="text/css" href="styles.css" />
     </head>
@@ -32,6 +32,7 @@
         </footer>
 
         <script src="vendors/babel.min.js"></script>
+        <script src="vendors/react-with-dom.js"></script>
         <script type="text/babel">
             function Header() {
                 let [expanded, setExpanded] = React.useState(false);
@@ -245,14 +246,13 @@
                 const initedRef = React.useRef(false);
                 const [activeTab, setActiveTab] = React.useState("");
                 const [hasRightScroll, setHasRightScroll] = React.useState(false);
-                const [len, setLen] = React.useState(0);
 
                 React.useEffect(() => {
                     if (!activeTab && !initedRef.current) {
                         initedRef.current = true;
                         setActiveTab(new URLSearchParams(location.search).get("tab") || "all");
                     }
-                });
+                },[]);
 
                 const onSelectInput = (event) => {
                     setActiveTab(event.target.value);
@@ -268,7 +268,7 @@
                     if (newHasRightScroll !== hasRightScroll) {
                         setHasRightScroll(newHasRightScroll);
                     }
-                });
+                },[activeTab]);
 
                 const onArrowCLick = () => {
                     const scroller = ref.current.querySelector(".section__panel:not(.section__panel_hidden)");
@@ -407,11 +407,8 @@
                                             <div
                                                 key={key}
                                                 role="tabpanel"
-                                                className={
-                                                    "section__panel" +
-                                                    (key === activeTab ? "" : " section__panel_hidden")
-                                                }
-                                                aria-hidden={key === activeTab ? "false" : "true"}
+                                                className={"section__panel"}
+                                                aria-hidden={"false"}
                                                 id={`panel_${key}`}
                                                 aria-labelledby={`tab_${key}`}
                                             >
